@@ -1,0 +1,47 @@
+{% load static %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+
+<style type="text/css">
+	#basket-qty {
+	  	position: absolute;
+	  	
+	  	right: 7px;
+	  	bottom: 40px;
+	  	font-size: 18px;
+	  	color: green;
+	  	opacity: 0.8;
+	  	font-family: 'Fredoka One', cursive;
+		}	
+</style>
+
+<header class="header">
+			<div class="header__left">
+				<a href="{% url 'products_page' %}">SHOP</a>
+			</div>
+			<div class="header__logo">
+				<a href="{% url 'shop' %}"><img src="{% static 'img/icons/allbirds-logo.svg' %}"></a>
+			</div>
+			<div class="header__right">
+				<ul>
+					<img src="{% static 'img/icons/user.svg' %}">
+
+					<a  href="{% url 'basket_summary' %}"><img style = 'width:35px; height:30px;' src="{% static 'img/icons/basket.jpg' %}">
+						<div id='basket-qty'> 
+						{% with total_qty=basket|length %}
+							{% if total_qty > 0 %}{{ total_qty }}
+							{% else %}
+								0
+							{% endif %}
+						{% endwith %}
+					</div>
+					</a>
+					
+				</ul>
+			</div>
+		</header>
+
+
+

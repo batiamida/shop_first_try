@@ -1,0 +1,120 @@
+{% extends 'store/products/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+	
+	<main class="main">
+         <div class="main__header mheader">
+            <div class="mheader__images">
+               <div class="mheader__image">
+                  <img src="{% static 'img/1.jpg' %}">
+               </div>
+               <div class="mheader__image">
+                  <img src="{% static 'img/2.jpg' %}">
+               </div>
+            </div>
+            <div class="mheader__text">
+               <p>Earth-Friendly.<br>Run-Ready.</p>
+            </div>
+            <div class="mheader__buttons">
+               <div class="mheader__button">
+                  <button>SHOP MEN</button>  
+               </div>
+               <div class="mheader__button">
+                  <button>SHOP WOMEN</button>   
+               </div>
+            </div>
+         </div>
+         <div class="main__favorites favorites">
+            <div class="favorites__title title">
+               <h2>Our Favorites</h2>
+            </div>
+            <nav class="favorites__select">
+               <ul>
+                  <li id='shoes'>SHOES</li>
+                  <li id='apparel'>APPAREL</li>
+                  <li id='basics'>BASICS</li>
+               </ul>
+               <div class="favorites__select_line">
+                  <div class="favorites__select_inline"></div>
+               </div>
+            </nav>
+            <div class="favorites__images favorites__images_1">
+               {% for product in products %}
+               <div class="favorites__image">
+                  <div class="favorites__image_img"> 
+                     <img src="{{ product.image.url }}">
+                     <a href="{% url 'single_item' pk=product.id %}"><button>BUY</button></a>
+                  </div>
+                  <h2>{{ product.title }}</h2>
+                  <div class="favorites__image_line"></div>
+                  <div class="favorites__image_text">
+                     <img src="{% static 'img/icons/2.webp' %}">
+                     <p>{{ product.description }}</p>
+                  </div>
+               </div>
+               {% endfor %}
+            </div>
+            <div class="favorites__images favorites__images_2">
+                {% for product in products %}
+               <div class="favorites__image">
+                  <div class="favorites__image_img"> 
+                     <img src="{{ product.image.url }}">
+                     <a href="{% url 'single_item' pk=product.id %}"><button>BUY</button></a>
+                  </div>
+                  <h2>{{ product.title }}</h2>
+                  <div class="favorites__image_line"></div>
+                  <div class="favorites__image_text">
+                     <img src="{% static 'img/icons/2.webp' %}">
+                     <p>{{ product.description }}</p>
+                  </div>
+               </div>
+               {% endfor %}
+            </div>
+            <div class="favorites__images favorites__images_3">
+               {% for product in products %}
+               <div class="favorites__image">
+                  <div class="favorites__image_img"> 
+                     <img src="{{ product.image.url }}">
+                     <a href="{% url 'single_item' pk=product.id %}"><button>BUY</button></a>
+                  </div>
+                  <h2>{{ product.title }}</h2>
+                  <div class="favorites__image_line"></div>
+                  <div class="favorites__image_text">
+                     <img src="{% static 'img/icons/2.webp' %}">
+                     <p>{{ product.description }}</p>
+                  </div>
+               </div>
+               {% endfor %}
+            </div>
+         </div>
+      </main>
+
+   
+		
+
+
+<script type="text/javascript">
+	
+    $(document).on('click', '#add-button', function (e) {
+       e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "basket_add" %}',
+            data: {
+                productid: $('#add-button').val(),
+               	productqty: $('#select option:selected').text(),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post'
+            },
+            success: function (json) {
+               document.getElementById('basket-qty').innerHTML=json.qty
+            },
+            error: function (xhr, errmsg, err) {}
+        });
+    })
+</script>
+
+{% endblock content %}

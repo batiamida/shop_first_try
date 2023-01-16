@@ -1,0 +1,99 @@
+{% extends 'store/products/base.html' %}
+{% load static %}
+{% block link %} <link rel="stylesheet" type="text/css" href="{% static 'css/products_page.css' %}"> {% endblock link %}
+{% block content %}
+	
+	
+	<main class="products">
+		<div class="products__sidebar sidebar">
+			<div class="sidebar__brends">
+				<button class='sidebar__open'>
+				<span>Brends</span>
+				<i class="arrowup"></i>
+				</button>
+				<nav class="sidebar__brends_list">
+					<form method="get">
+						{% with myFilter.form as form %}
+						{{ form.title }}
+						
+						<ul>
+							{{ form.brends }}
+							
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="sidebar__colors">
+					<button class="sidebar__open">
+					<span>Colors</span>
+					<i class="arrowup"></i>
+					</button>
+					<div class="sidebar__colors_flex">
+						<ul>
+
+							{% for color in form.colors %}
+							<a href="#"><li >{{ color }}</li></a>
+							{% endfor %}
+							
+						
+						</ul>
+					</div>
+				</div>
+				<div class="sidebar__price">
+					<button class="sidebar__open">
+					<span>Price</span>
+					<i class="arrowup"></i>
+					</button>
+					<div class="sidebar__price_flex">
+						Від {{ form.price__gt }}
+						До {{ form.price__lt }}
+						
+					</div>
+					<button id = 'search-button' type="submit">OK</button>
+				 </div>
+				</form>
+			{% endwith %}
+		</div>
+	</div>
+	<div class="products__items pitems">
+		{% for product in products %}
+			<div class="pitems__item">
+				<h2>{{ product.title }}</h2>
+				<div class="pitems__item_img">
+					<img src="{{ product.image.url }}">
+				</div>
+				<p>{{ product.description }}</p>
+				<p class='pitems__item_color'>Colors of product:</p>
+				<ul>
+
+					<li>{{ product.colors }}</li>
+					
+					
+				</ul>
+				<p>{{ product.price }}$</p>
+				<a  href="{% url 'single_item' pk=product.id %}"><button>BUY</button></a>
+			</div>
+		{% endfor %}
+	</div>
+</main>
+</div>
+<script type="text/javascript" src='{% static "js/products_page.js" %}'>
+	$(document).on('click', '#add-button', function (e) {
+e.preventDefault();
+$.ajax({
+type: 'POST',
+url: '{% url "basket_add" %}',
+data: {
+productid: $('#add-button').val(),
+	productqty: $('#select option:selected').text(),
+csrfmiddlewaretoken: "{{csrf_token}}",
+action: 'post'
+},
+success: function (json) {
+document.getElementById('basket-qty').innerHTML=json.qty
+},
+error: function (xhr, errmsg, err) {}
+});
+})
+</script>
+{% endblock content %}

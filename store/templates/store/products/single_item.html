@@ -1,0 +1,66 @@
+{% extends 'store/products/base.html' %}
+
+{% load static %}
+
+{% block link %}<link rel="stylesheet" type="text/css" href="{% static 'css/article.css' %}"> {% endblock link %}
+{% block content %}
+
+
+	
+	
+
+	
+
+    <main class="main">
+            <div class="container">
+                <div class="main__article article">
+                    <div class="article__image">
+                        <img src="{{ product.image.url }}">
+                    </div>
+                    <div class="article__text">
+                        <div class="article__text_about">
+                            <h2>{{ product.title }}</h2>
+                            <p>{{ product.price }}$</p>
+                        </div>
+                         <label for="select">qty</label>
+                            <select id="select">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                            </select>
+                        <button type="button" id='add-button' value='{{product.id}}'>+ to a basket</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+   
+
+
+                           
+
+       
+
+
+<script type="text/javascript">
+	
+    $(document).on('click', '#add-button', function (e) {
+       e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "basket_add" %}',
+            data: {
+                productid: $('#add-button').val(),
+               	productqty: $('#select option:selected').text(),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post'
+            },
+            success: function (json) {
+               document.getElementById('basket-qty').innerHTML=json.qty
+            },
+            error: function (xhr, errmsg, err) {}
+        });
+    })
+</script>
+
+{% endblock content %}

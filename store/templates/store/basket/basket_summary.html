@@ -1,0 +1,96 @@
+{% extends 'store/products/base.html' %}
+{% load static %}
+
+{% block title %}Basket{% endblock title %}
+
+{% block link %}<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> 
+<link rel="stylesheet" type="text/css" href="{% static 'css/article.css' %}">
+{% endblock link %}
+
+
+{% block content %}
+	
+	<div class="basket">
+			{% for item in basket %}
+				{% with product=item.product %}
+			<div data-index='{{ product.id }}' class="basket__items">
+				<div class="basket__items_img">
+					<img src="{{ product.image.url }}">
+				</div>
+				<p>name:{{ product.title }}</p>
+				
+				<p>{{ product.price }}$</p>
+
+				<div class="basket__items_button">
+					                         <label for="select">qty</label>
+                            <select id="select{{ product.id }}">
+                            	<option selected>
+                            		{{ item.qty }}
+                            	</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                            </select>
+					<button type="button" id='update-button' class = 'update-button' data-index="{{ product.id }}">Update</button>
+					<button type="button" id='delete-button' class = 'delete-button' data-index="{{ product.id }}">Delete</button>
+				</div>
+			</div>
+				{% endwith %}
+			{% endfor %}
+			<div class="basket__price">
+				{% if basket.get_total_price > 0 %}
+				<p >Total price: <span id='subtotal'>{{ basket.get_total_price }}</span>$</p>
+				{% else %}
+					<p>Nothing is in your basket</p>
+				{% endif %}
+			</div>
+		</div>
+
+	
+<script type="text/javascript">
+	// Delete Item
+    $(document).on('click', '#delete-button', function (e) {
+       e.preventDefault();
+       var proid = $(this).data('index');
+        $.ajax({
+            type: 'POST',
+            url: '{% url "basket_delete" %}',
+            data: {
+                productid: $(this).data('index'),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post'
+            },
+            success: function (json) {
+            	
+            	$('.basket__items[data-index="' + proid + '"]').remove();
+            	document.getElementById('subtotal').innerHTML=json.subtotal
+            	document.getElementById('basket-qty').innerHTML=json.qty
+            },
+            error: function (xhr, errmsg, err) {}
+        });
+    })
+
+    // Update Item
+    $(document).on('click', '#update-button', function (e) {
+       e.preventDefault();
+       var proid = $(this).data('index');
+        $.ajax({
+            type: 'POST',
+            url: '{% url "basket_update" %}',
+            data: {
+                productid: $(this).data('index'),
+                productqty: $('#select' + proid +' option:selected').text(),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post'
+            },
+            success: function (json) {
+            	document.getElementById('basket-qty').innerHTML=json.qty
+            	document.getElementById('subtotal').innerHTML=json.subtotal
+            },
+            error: function (xhr, errmsg, err) {}
+        });
+    })
+</script>
+	
+{% endblock content %}
